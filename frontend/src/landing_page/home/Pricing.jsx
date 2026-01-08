@@ -20,7 +20,7 @@ const Pricing = () => {
           </div>
           <div className=' col-4 d-flex flex-row align-items-end' >
             <img src="media/intradayTrades.svg" alt="" style={{maxWidth:"70%", width:"auto", right:"40px"}} className='position-relative'/>
-            <p className='text-nowrap position-absolute'  style={{fontSize:"0.7rem", right:"240px"}}> Intraday and <br />F&O</p>
+            <p className='text-nowrap position-absolute'  style={{fontSize:"0.7rem", right:"260px"}}> Intraday and <br />F&O</p>
           </div>
         </div>
       </div>
