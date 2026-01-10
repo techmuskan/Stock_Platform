@@ -3,6 +3,9 @@ import React from 'react'
 const Universe = () => {
   return (
     <div className="container p-5">
+      <div className="row px-5 pb-5">
+        <p className='text-center px-5 h5'>Want to know more about our technology stack? Check out the <a href="" className="text-decoration-none ">Zerodha.tech</a> blog.</p>
+      </div>
       <div className="row p-5 text-center">
         <h1 className='fs-3'>The Zerodha Universe</h1>
         <p className='fs-5 py-3'>Extend your trading and investment experience even further with our partner platforms</p>
