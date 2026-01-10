@@ -1,11 +1,13 @@
 import React from 'react'
-import Hero from '../about/Hero'
+import Hero from './Hero'
+import ChargesExplained from './ChargesExplained'
 
 const PricingPage = () => {
   return (
-    <div>
-
-    </div>
+    <>
+    <Hero/>
+    <ChargesExplained/>
+    </>
   )
 }
 
