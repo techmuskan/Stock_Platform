@@ -3,7 +3,7 @@ import React from 'react'
 const Hero = () => {
   return (
     <div className="container p-5">
-      <div className="row p-5 text-center">
+      <div className="row p-5 text-center mb-5">
         <h1 className='h2'>Charges</h1>
         <p className='fs-4' style={{color:"#9B9B9B"}}>List of all charges and taxes</p>
       </div>

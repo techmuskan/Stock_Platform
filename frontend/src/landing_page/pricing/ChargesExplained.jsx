@@ -2,7 +2,7 @@ import React from 'react'
 
 const ChargesExplained = () => {
   return (
-    <div className="container p-5">
+    <div className="container pt-4 px-5">
       <div className="row px-5">
         <h1 className='h3 py-4'>Charges explained</h1>
         <div className="col-6">
