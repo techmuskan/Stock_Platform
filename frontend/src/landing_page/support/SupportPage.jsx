@@ -1,6 +1,7 @@
 import React from 'react'
 import Hero from './Hero'
 import RaiseTicket from './RaiseTicket'
+import "../../../src/index.css"
 
 const SupportPage = () => {
   return (

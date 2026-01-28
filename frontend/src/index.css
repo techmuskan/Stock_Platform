@@ -7,3 +7,87 @@ html,body{
   height: 100%;
   width: 100%;
 }
+
+.accordion{
+  border: 0 !important;
+}
+
+ /* Remove default bootstrap arrow */
+.accordion-button::after {
+  display: none !important;
+}
+
+/* Accordion button clean look */
+.accordion-button {
+  background-color: #fff !important;
+  box-shadow: none !important;
+  border: none;
+  padding: 18px 20px;
+  font-size: 18px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Remove blue on click/focus */
+.accordion-button:focus,
+.accordion-button:hover,
+.accordion-button:not(.collapsed) {
+  background-color: #fff !important;
+  box-shadow: none !important;
+  color: #000;
+}
+
+/* Left icon (plus, user, etc.) */
+.accordion-button i {
+  font-size: 22px;
+  width: 30px;
+  text-align: center;
+  color: #387ed1; /* Zerodha blue */
+}
+
+/* Accordion item border */
+.accordion-item {
+  border: 1px solid rgba(130, 26, 26, 0.105) !important;
+  border-radius: 4px solid rgba(239, 226, 226, 0) !important;
+  margin-bottom: 10px;
+}
+
+
+/* Body spacing */
+.accordion-body {
+  padding-left: 55px;
+}
+
+/* List styling */
+.accordion-body ul {
+  padding-left: 18px;
+}
+
+.accordion-body li {
+  color: #387ed1;
+  padding: 8px 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.accordion-body li:hover {
+  color: black;
+}
+
+
+.right-arrow {
+  margin-left: auto;
+}
+
+.right-arrow i {
+  font-size: 14px;
+  color: #387ed1;
+  transition: transform 0.3s ease;
+}
+
+/* Rotate when open */
+.accordion-button:not(.collapsed) .right-arrow i {
+  transform: rotate(180deg);
+}
