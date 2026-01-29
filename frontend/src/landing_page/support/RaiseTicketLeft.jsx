@@ -1,7 +1,7 @@
 import React from "react";
 const RaiseTicketLeft = () => {
   return (
-    <div className="p-2">
+    <div className="py-5">
       <div className="accordion" id="accordionPanelsStayOpenExample">
         <div className="accordion-item ">
           <h2 className="accordion-header">
@@ -16,8 +16,8 @@ const RaiseTicketLeft = () => {
               <i className="fa fa-plus-circle" aria-hidden="true"></i>
               Account Opening
               <span className="right-arrow">
-  <i className="fa fa-chevron-down"></i>
-</span>
+                <i className="fa fa-chevron-down"></i>
+              </span>
             </button>
           </h2>
           <div
@@ -48,8 +48,8 @@ const RaiseTicketLeft = () => {
               <i className="fa fa-user" aria-hidden="true"></i>
               Your Zerodha Account
               <span className="right-arrow">
-  <i className="fa fa-chevron-down"></i>
-</span>
+                <i className="fa fa-chevron-down"></i>
+              </span>
             </button>
           </h2>
           <div
@@ -82,8 +82,8 @@ const RaiseTicketLeft = () => {
               <i className="fa fa-google-wallet" aria-hidden="true"></i>
               Kite
               <span className="right-arrow">
-  <i className="fa fa-chevron-down"></i>
-</span>
+                <i className="fa fa-chevron-down"></i>
+              </span>
             </button>
           </h2>
           <div
@@ -115,8 +115,8 @@ const RaiseTicketLeft = () => {
               <i className="fa fa-inr" aria-hidden="true"></i>
               Funds
               <span className="right-arrow">
-  <i className="fa fa-chevron-down"></i>
-</span>
+                <i className="fa fa-chevron-down"></i>
+              </span>
             </button>
           </h2>
           <div
@@ -144,9 +144,10 @@ const RaiseTicketLeft = () => {
               aria-controls="panelsStayOpen-collapseFive"
             >
               <i className="fa fa-connectdevelop" aria-hidden="true"></i>
-              Console<span className="right-arrow">
-  <i className="fa fa-chevron-down"></i>
-</span>
+              Console
+              <span className="right-arrow">
+                <i className="fa fa-chevron-down"></i>
+              </span>
             </button>
           </h2>
           <div
@@ -178,8 +179,8 @@ const RaiseTicketLeft = () => {
               <i className="fa fa-check-circle" aria-hidden="true"></i>
               Coin
               <span className="right-arrow">
-  <i className="fa fa-chevron-down"></i>
-</span>
+                <i className="fa fa-chevron-down"></i>
+              </span>
             </button>
           </h2>
           <div

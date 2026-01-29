@@ -51,7 +51,7 @@ html,body{
 .accordion-item {
   border: 1px solid rgba(130, 26, 26, 0.105) !important;
   border-radius: 4px solid rgba(239, 226, 226, 0) !important;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 
@@ -90,4 +90,20 @@ html,body{
 /* Rotate when open */
 .accordion-button:not(.collapsed) .right-arrow i {
   transform: rotate(180deg);
+}
+
+
+/* right-section */
+.announcement-box li {
+  text-decoration: underline;
+}
+
+.announcement-box li:hover {
+  color: black;
+  cursor: pointer;
+}
+
+.quick-links li:hover {
+  color: #000;
+  cursor: pointer;
 }
