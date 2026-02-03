@@ -6,6 +6,14 @@ const Positions = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const formatNumber = (value) => {
+    const num = Number(value);
+    if (Number.isNaN(num)) {
+      return "0.00";
+    }
+    return num.toFixed(2);
+  };
+
   useEffect(() => {
     const fetchPositions = async () => {
       try {
@@ -15,7 +23,11 @@ const Positions = () => {
         setAllPositions(res.data);
       } catch (err) {
         console.error("Axios error:", err);
-        setError("Could not load positions. Please try again.");
+        if (err.response?.status === 401) {
+          setError("Session expired. Please login again.");
+        } else {
+          setError("Could not load positions. Please try again.");
+        }
       } finally {
         setLoading(false);
       }
@@ -49,20 +61,23 @@ const Positions = () => {
 
           <tbody>
             {allPositions.map((stock, index) => {
-              const curValue = stock.price * stock.qty;
-              const isProfit = curValue - stock.avg * stock.qty >= 0;
+              const qty = Number(stock.qty) || 0;
+              const avg = Number(stock.avg) || 0;
+              const price = Number(stock.price) || 0;
+              const curValue = price * qty;
+              const isProfit = curValue - avg * qty >= 0;
               const profClass = isProfit ? "profit" : "loss";
               const dayClass = stock.isLoss ? "loss" : "profit";
 
               return (
                 <tr key={index}>
-                  <td>{stock.product}</td>
-                  <td>{stock.name}</td>
-                  <td>{stock.qty}</td>
-                  <td>{stock.avg.toFixed(2)}</td>
-                  <td>{stock.price.toFixed(2)}</td>
+                  <td>{stock.product || "—"}</td>
+                  <td>{stock.name || "—"}</td>
+                  <td>{qty}</td>
+                  <td>{formatNumber(avg)}</td>
+                  <td>{formatNumber(price)}</td>
                   <td className={profClass}>
-                    {(curValue - stock.avg * stock.qty).toFixed(2)}
+                    {formatNumber(curValue - avg * qty)}
                   </td>
                   <td className={dayClass}>{stock.day}</td>
                 </tr>

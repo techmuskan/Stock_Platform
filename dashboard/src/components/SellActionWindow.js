@@ -16,7 +16,7 @@ const SellActionWindow = ({ uid, availableQty }) => {
     return;
   }
 
-  if (stockQuantity > availableQty) {
+  if (Number.isFinite(availableQty) && stockQuantity > availableQty) {
     alert("Cannot sell more than available quantity");
     return;
   }
@@ -54,7 +54,7 @@ const SellActionWindow = ({ uid, availableQty }) => {
             <input
               type="number"
               min="1"
-              max={availableQty}
+              max={Number.isFinite(availableQty) ? availableQty : undefined}
               value={stockQuantity}
               onChange={(e) => setStockQuantity(+e.target.value)}
             />
@@ -73,7 +73,7 @@ const SellActionWindow = ({ uid, availableQty }) => {
         </div>
 
         <p style={{ marginTop: "10px", fontSize: "12px", color: "#888" }}>
-          Available Qty: {availableQty}
+          Available Qty: {Number.isFinite(availableQty) ? availableQty : "—"}
         </p>
       </div>
 
