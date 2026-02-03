@@ -38,26 +38,48 @@ const Login = () => {
 
   return (
     <div className="auth-page">
-      <form className="auth-form" onSubmit={handleLogin}>
-        <h2>Login</h2>
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={data.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={data.password}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit">Login</button>
-      </form>
+      <div className="auth-shell">
+        <div className="auth-brand">
+          <div className="auth-badge">Stock Platform</div>
+          <h1>Welcome back</h1>
+          <p>Login to access your dashboard, orders, and insights.</p>
+          <ul>
+            <li>Fast, secure access</li>
+            <li>Unified account view</li>
+            <li>Real-time portfolio insights</li>
+          </ul>
+        </div>
+
+        <form className="auth-form" onSubmit={handleLogin}>
+          <h2>Login</h2>
+          <p>Use the email you registered with.</p>
+          <label className="auth-label" htmlFor="login-email">
+            Email
+          </label>
+          <input
+            id="login-email"
+            type="email"
+            name="email"
+            placeholder="name@example.com"
+            value={data.email}
+            onChange={handleChange}
+            required
+          />
+          <label className="auth-label" htmlFor="login-password">
+            Password
+          </label>
+          <input
+            id="login-password"
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+            value={data.password}
+            onChange={handleChange}
+            required
+          />
+          <button type="submit">Login</button>
+        </form>
+      </div>
     </div>
   );
 };
