@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import axios from "axios";
+import api from "../api/client";
 import GeneralContext from "./GeneralContext";
 import "./BuyActionWindow.css"; // reuse same CSS
 
@@ -24,7 +24,7 @@ const SellActionWindow = ({ uid, availableQty }) => {
   try {
     setLoading(true);
 
-    await axios.post("http://localhost:3002/newOrder", {
+    await api.post("/newOrder", {
       name: uid,
       qty: stockQuantity,
       price: stockPrice,

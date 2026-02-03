@@ -1,23 +1,30 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/client";
 import { VerticalGraph } from "./VerticalGraph";
 
 //import { holdings } from "../data/data";
 
 const Holdings = () => {
   const [allHoldings, setAllHoldings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-  axios
-    .get("http://localhost:3002/allHoldings")
-    .then((res) => {
-      console.log("API response:", res.data);
-      setAllHoldings(res.data);
-    })
-    .catch((err) => {
-      console.error("Axios error:", err);
-    });
-}, []);
+    const fetchHoldings = async () => {
+      try {
+        setLoading(true);
+        setError("");
+        const res = await api.get("/allHoldings");
+        setAllHoldings(res.data);
+      } catch (err) {
+        console.error("Axios error:", err);
+        setError("Could not load holdings. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchHoldings();
+  }, []);
 
 
   // const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
@@ -53,6 +60,12 @@ const Holdings = () => {
   return (
     <>
       <h3 className="title">Holdings ({allHoldings.length})</h3>
+
+      {loading && <div>Loading holdings...</div>}
+      {!loading && error && <div>{error}</div>}
+      {!loading && !error && allHoldings.length === 0 && (
+        <div>No holdings yet.</div>
+      )}
 
       <div className="order-table">
         <table>
@@ -95,25 +108,29 @@ const Holdings = () => {
         </table>
       </div>
 
-      <div className="row">
-        <div className="col">
-          <h5>
-            29,875.<span>55</span>{" "}
-          </h5>
-          <p>Total investment</p>
-        </div>
-        <div className="col">
-          <h5>
-            31,428.<span>95</span>{" "}
-          </h5>
-          <p>Current value</p>
-        </div>
-        <div className="col">
-          <h5>1,553.40 (+5.20%)</h5>
-          <p>P&L</p>
-        </div>
-      </div>
-      <VerticalGraph data={data} />
+      {!loading && !error && allHoldings.length > 0 && (
+        <>
+          <div className="row">
+            <div className="col">
+              <h5>
+                29,875.<span>55</span>{" "}
+              </h5>
+              <p>Total investment</p>
+            </div>
+            <div className="col">
+              <h5>
+                31,428.<span>95</span>{" "}
+              </h5>
+              <p>Current value</p>
+            </div>
+            <div className="col">
+              <h5>1,553.40 (+5.20%)</h5>
+              <p>P&L</p>
+            </div>
+          </div>
+          <VerticalGraph data={data} />
+        </>
+      )}
     </>
   );
 };

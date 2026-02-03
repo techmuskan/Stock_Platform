@@ -8,18 +8,18 @@ const { HoldingsModel } = require("./models/Holdingsmodel");
 const { OrdersModel } = require("./models/OrdersModel");
 const {PositionsModel}  = require("./models/PositionsModel");
 const authRoute = require("./Routes/AuthRoute");
+const { requireAuth } = require("./Middlewares/AuthMiddleware");
 const cookieParser = require("cookie-parser");
 
 const app = express();
 const PORT = process.env.PORT || 3002;
 
-app.use(cors(
-  {
-    origin: ["http://localhost:3000"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  }
-));
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "http://localhost:3000"], // allow frontend + dashboard
+    credentials: true, // allow cookies
+  })
+);
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -28,18 +28,18 @@ app.use("/api/auth", authRoute);
 
 // ------------------ GET ROUTES ------------------
 
-app.get("/allHoldings", async (req, res) => {
+app.get("/allHoldings", requireAuth, async (req, res) => {
   try {
-    const holdings = await HoldingsModel.find({});
+    const holdings = await HoldingsModel.find({ userId: req.user._id });
     res.json(holdings);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.get("/allPositions", async (req, res) => {
+app.get("/allPositions", requireAuth, async (req, res) => {
   try {
-    const positions = await PositionsModel.find({});
+    const positions = await PositionsModel.find({ userId: req.user._id });
     res.json(positions);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -47,9 +47,9 @@ app.get("/allPositions", async (req, res) => {
 });
 
 
-app.get("/allOrders", async (req, res) => {
+app.get("/allOrders", requireAuth, async (req, res) => {
   try {
-    const orders = await OrdersModel.find({});
+    const orders = await OrdersModel.find({ userId: req.user._id });
     res.json(orders);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -58,7 +58,7 @@ app.get("/allOrders", async (req, res) => {
 
 // ------------------ ORDER ROUTE ------------------
 
-app.post("/newOrder", async (req, res) => {
+app.post("/newOrder", requireAuth, async (req, res) => {
   try {
     let { name, qty, price, mode } = req.body;
 
@@ -72,11 +72,11 @@ app.post("/newOrder", async (req, res) => {
     }
 
     // Save order
-    await OrdersModel.create({ name, qty, price, mode });
+    await OrdersModel.create({ userId: req.user._id, name, qty, price, mode });
 
     // Handle BUY
     if (mode === "BUY") {
-      let holding = await HoldingsModel.findOne({ name });
+      let holding = await HoldingsModel.findOne({ userId: req.user._id, name });
 
       if (holding) {
         const totalQty = holding.qty + qty;              // both numbers now
@@ -89,6 +89,7 @@ app.post("/newOrder", async (req, res) => {
         await holding.save();
       } else {
         await HoldingsModel.create({
+          userId: req.user._id,
           name,
           qty,
           avg: price,
@@ -101,7 +102,7 @@ app.post("/newOrder", async (req, res) => {
 
     // Handle SELL
     if (mode === "SELL") {
-      let holding = await HoldingsModel.findOne({ name });
+      let holding = await HoldingsModel.findOne({ userId: req.user._id, name });
       if (!holding || holding.qty < qty) {
         return res.status(400).json({ error: "Not enough quantity" });
       }
@@ -110,7 +111,7 @@ app.post("/newOrder", async (req, res) => {
       holding.price = price;
 
       if (holding.qty === 0) {
-        await HoldingsModel.deleteOne({ name });
+        await HoldingsModel.deleteOne({ userId: req.user._id, name });
       } else {
         await holding.save();
       }

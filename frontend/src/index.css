@@ -8,6 +8,24 @@ html,body{
   width: 100%;
 }
 
+.landing-navbar {
+  padding: 0.8rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.landing-logo {
+  width: 140px;
+  max-width: 100%;
+}
+
+@media (min-width: 992px) {
+  .landing-navbar {
+    padding: 0.8rem 2rem;
+  }
+}
+
 .accordion{
   border: 0 !important;
 }

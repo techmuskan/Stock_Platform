@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 
 module.exports.Signup = async (req, res) => {
   try {
-    const { email, password, username, createdAt } = req.body;
+    const { email, password, username } = req.body;
 
     if (!email || !password || !username) {
       return res.status(400).json({ message: "All fields are required" });
@@ -15,20 +15,17 @@ module.exports.Signup = async (req, res) => {
       return res.status(409).json({ message: "User already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // create user (password is hashed in pre-save)
+    const user = await User.create({ email, password, username });
 
-    const user = await User.create({
-      email,
-      password: hashedPassword,
-      username,
-      createdAt,
-    });
-
+    // create JWT token
     const token = createSecretToken(user._id);
 
+    // send token in cookie
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: "lax",  // important for cross-origin
+      maxAge: 3*24*60*60*1000 // 3 days
     });
 
     res.status(201).json({
@@ -42,48 +39,51 @@ module.exports.Signup = async (req, res) => {
   }
 };
 
+
 module.exports.Login = async (req, res) => {
   try {
-    console.log("Login request body:", req.body);
-
-    const { email, password } = req.body;
+    const email = req.body.email?.trim();
+    const password = req.body.password?.trim();
 
     if (!email || !password) {
-      console.log("Missing email or password in request");
       return res.status(400).json({ message: "All fields are required" });
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      console.log(`No user found with email: ${email}`);
       return res.status(401).json({ message: "Incorrect email or password" });
     }
 
-    console.log(`User found: ${user.email}, hashed password: ${user.password}`);
-
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log("Password match result:", isMatch);
-
     if (!isMatch) {
       return res.status(401).json({ message: "Incorrect email or password" });
     }
 
+    // ✅ IMPORTANT: set JWT cookie here too
     const token = createSecretToken(user._id);
     res.cookie("token", token, {
       httpOnly: true,
       sameSite: "lax",
+      maxAge: 3*24*60*60*1000
     });
 
-    console.log(`User ${user.username} logged in successfully`);
-
-    return res.status(200).json({
-      message: "User logged in successfully",
-      success: true,
-      user: user.username,
-    });
+    res.status(200).json({ success: true, message: "Login successful" });
 
   } catch (err) {
-    console.error("Login error:", err);
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports.Logout = async (_req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      sameSite: "lax",
+    });
+    return res.status(200).json({ success: true, message: "Logged out" });
+  } catch (error) {
+    console.error("Logout error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

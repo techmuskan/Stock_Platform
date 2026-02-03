@@ -1,24 +1,37 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/client";
 
 const Positions = () => {
   const [allPositions, setAllPositions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3002/allPositions")
-      .then((res) => {
-        console.log("API response:", res.data);
+    const fetchPositions = async () => {
+      try {
+        setLoading(true);
+        setError("");
+        const res = await api.get("/allPositions");
         setAllPositions(res.data);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Axios error:", err);
-      });
+        setError("Could not load positions. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPositions();
   }, []);
 
   return (
     <>
       <h3 className="title">Positions ({allPositions.length})</h3>
+
+      {loading && <div>Loading positions...</div>}
+      {!loading && error && <div>{error}</div>}
+      {!loading && !error && allPositions.length === 0 && (
+        <div>No open positions.</div>
+      )}
 
       <div className="order-table">
         <table>

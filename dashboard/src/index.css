@@ -7,6 +7,60 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f7fb;
+}
+
+.auth-form {
+  width: 360px;
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(20, 20, 20, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-form h2 {
+  margin: 0 0 8px 0;
+  font-weight: 500;
+  color: #2d2d2d;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #e3e6ee;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.auth-form input:focus {
+  border-color: #4184f3;
+  box-shadow: 0 0 0 3px rgba(65, 132, 243, 0.15);
+}
+
+.auth-form button {
+  width: 100%;
+  background: #111827;
+  color: #ffffff;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.auth-form button:hover {
+  background: #1f2937;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -337,6 +391,23 @@ hr {
 .profile:hover .username {
   cursor: pointer;
   color: rgb(223, 91, 43);
+}
+
+.profile-actions {
+  margin-left: 20px;
+}
+
+.profile-actions button {
+  background: #111827;
+  color: #ffffff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.profile-actions button:hover {
+  background: #1f2937;
 }
 
 .orders {
@@ -841,6 +912,5 @@ hr {
 .action:hover {
   background-color: rgb(212, 212, 212);
 }
-
 
 

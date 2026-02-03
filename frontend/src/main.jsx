@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client'
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import './index.css'
+import 'react-toastify/dist/ReactToastify.css'
 
 import HomePage from './landing_page/home/HomePage'
 import SignUp from './landing_page/signup/SignUp'

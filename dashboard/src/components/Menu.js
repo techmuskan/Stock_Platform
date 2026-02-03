@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../api/client";
+import { useAuth } from "./AuthContext";
 
 const Menu = () => {
   const [selectedMenu, setSelectedMenu] = useState(0);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
   const handleMenuClick = (index) => {
     setSelectedMenu(index);
@@ -13,6 +16,26 @@ const Menu = () => {
   const handleProfileClick = (index) => {
     setIsProfileDropdownOpen(!isProfileDropdownOpen);
   };
+
+  const handleLogout = async () => {
+    try {
+      await api.post("/api/auth/logout", {});
+    } catch (err) {
+      console.error("Logout failed:", err);
+    } finally {
+      window.location.href = "http://localhost:5173/";
+    }
+  };
+
+  const initials = user
+    ? user
+        .trim()
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0].toUpperCase())
+        .join("")
+    : "U";
 
   const menuClass = "menu";
   const activeMenuClass = "menu selected";
@@ -96,9 +119,16 @@ const Menu = () => {
         </ul>
         <hr />
         <div className="profile" onClick={handleProfileClick}>
-          <div className="avatar">ZU</div>
-          <p className="username">USERID</p>
+          <div className="avatar">{initials}</div>
+          <p className="username">{user || "User"}</p>
         </div>
+        {isProfileDropdownOpen && (
+          <div className="profile-actions">
+            <button className="btn" onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

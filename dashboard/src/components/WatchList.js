@@ -1,7 +1,5 @@
 import React, { useState, useContext } from "react";
 
-import axios from "axios";
-
 import GeneralContext from "./GeneralContext";
 
 import { Tooltip, Grow } from "@mui/material";
@@ -16,15 +14,21 @@ import {
 import { watchlist } from "../data/data";
 import { DoughnutChart } from "./DoughnoutChart";
 
-const labels = watchlist.map((subArray) => subArray["name"]);
-
 const WatchList = () => {
+  const [query, setQuery] = useState("");
+  const normalizedQuery = query.trim().toLowerCase();
+  const filteredWatchlist = watchlist.filter((stock) =>
+    stock.name.toLowerCase().includes(normalizedQuery)
+  );
+
+  const labels = filteredWatchlist.map((subArray) => subArray["name"]);
+
   const data = {
     labels,
     datasets: [
       {
         label: "Price",
-        data: watchlist.map((stock) => stock.price),
+        data: filteredWatchlist.map((stock) => stock.price),
         backgroundColor: [
           "rgba(255, 99, 132, 0.5)",
           "rgba(54, 162, 235, 0.5)",
@@ -82,15 +86,25 @@ const WatchList = () => {
           id="search"
           placeholder="Search eg:infy, bse, nifty fut weekly, gold mcx"
           className="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
         />
-        <span className="counts"> {watchlist.length} / 50</span>
+        <span className="counts">
+          {" "}
+          {filteredWatchlist.length} / {watchlist.length}
+        </span>
       </div>
 
       <ul className="list">
-        {watchlist.map((stock, index) => {
+        {filteredWatchlist.map((stock, index) => {
           return <WatchListItem stock={stock} key={index} />;
         })}
       </ul>
+      {filteredWatchlist.length === 0 && (
+        <div style={{ padding: "12px 14px", color: "#888" }}>
+          No matches found.
+        </div>
+      )}
 
       <DoughnutChart data={data} />
     </div>

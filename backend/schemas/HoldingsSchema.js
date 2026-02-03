@@ -1,7 +1,8 @@
-const {Schema} = require("mongoose");
+const { Schema } = require("mongoose");
 
 const HoldingsSchema = new Schema(
     {
+        userId: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
         name: String,
         qty: Number,
         avg : Number,
