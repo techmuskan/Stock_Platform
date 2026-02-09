@@ -152,14 +152,14 @@ if (process.env.NODE_ENV === "production") {
 
   if (fs.existsSync(dashboardBuild)) {
     app.use("/dashboard", express.static(dashboardBuild));
-    app.get("/dashboard/*", (_req, res) => {
+    app.get(/^\/dashboard\/.*$/, (_req, res) => {
       res.sendFile(path.join(dashboardBuild, "index.html"));
     });
   }
 
   if (fs.existsSync(frontendDist)) {
     app.use(express.static(frontendDist));
-    app.get("*", (_req, res) => {
+    app.get(/^\/(?!api\/).*/, (_req, res) => {
       res.sendFile(path.join(frontendDist, "index.html"));
     });
   }
