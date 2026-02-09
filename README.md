@@ -84,4 +84,4 @@ REACT_APP_API_BASE_URL=http://localhost:3002
 - Forgot password OTPs are emailed through SMTP (Gmail app password recommended).
 
 ## Author
-Muskan
+Muskan Kawadkar(3rd Year, B.Tech student(Web Developer and Software Engineer))
