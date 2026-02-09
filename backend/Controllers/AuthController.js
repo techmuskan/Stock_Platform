@@ -1,6 +1,9 @@
 const User = require("../models/UserModel");
 const { createSecretToken } = require("../util/secretToken.js");
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
+const { PasswordResetModel } = require("../models/PasswordResetModel");
+const { sendPasswordResetOtp } = require("../util/mailer");
 
 module.exports.Signup = async (req, res) => {
   try {
@@ -93,6 +96,92 @@ module.exports.Logout = async (_req, res) => {
     return res.status(200).json({ success: true, message: "Logged out" });
   } catch (error) {
     console.error("Logout error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports.ForgotPassword = async (req, res) => {
+  try {
+    const email = req.body.email?.trim();
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(200).json({
+        success: true,
+        message: "If the account exists, an OTP has been sent.",
+      });
+    }
+
+    // Invalidate any active OTPs for this email
+    await PasswordResetModel.updateMany(
+      { email, used: false, expiresAt: { $gt: new Date() } },
+      { $set: { used: true } }
+    );
+
+    const otp = String(crypto.randomInt(0, 1000000)).padStart(6, "0");
+    const otpHash = await bcrypt.hash(otp, 10);
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    await PasswordResetModel.create({ email, otpHash, expiresAt });
+    await sendPasswordResetOtp({ to: email, otp });
+
+    return res.status(200).json({
+      success: true,
+      message: "If the account exists, an OTP has been sent.",
+    });
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports.ResetPassword = async (req, res) => {
+  try {
+    const email = req.body.email?.trim();
+    const otp = req.body.otp?.trim();
+    const password = req.body.password?.trim();
+    const confirmPassword = req.body.confirmPassword?.trim();
+
+    if (!email || !otp || !password || !confirmPassword) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    const reset = await PasswordResetModel.findOne({
+      email,
+      used: false,
+      expiresAt: { $gt: new Date() },
+    }).sort({ createdAt: -1 });
+
+    if (!reset) {
+      return res.status(400).json({ message: "OTP expired or invalid" });
+    }
+
+    const otpMatch = await bcrypt.compare(otp, reset.otpHash);
+    if (!otpMatch) {
+      return res.status(400).json({ message: "OTP expired or invalid" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.password = password;
+    await user.save();
+
+    reset.used = true;
+    await reset.save();
+
+    return res.status(200).json({ success: true, message: "Password updated" });
+  } catch (error) {
+    console.error("Reset password error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

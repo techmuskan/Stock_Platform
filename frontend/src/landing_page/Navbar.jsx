@@ -58,6 +58,12 @@ const Navbar = () => {
                 Support
               </NavLink>
             </li>
+
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/lab" onClick={handleNavClick}>
+                Market Lab
+              </NavLink>
+            </li>
           </ul>
         </div>
       </nav>

@@ -77,6 +77,15 @@ const Login = () => {
             onChange={handleChange}
             required
           />
+          <div className="auth-footer">
+            <button
+              type="button"
+              className="auth-link"
+              onClick={() => navigate("/forgot-password")}
+            >
+              Forgot password?
+            </button>
+          </div>
           <button type="submit">Login</button>
         </form>
       </div>

@@ -382,3 +382,269 @@ html,body{
     grid-template-columns: 1fr;
   }
 }
+
+.market-lab {
+  background: radial-gradient(1200px 600px at 10% 0%, #e9f2ff 0%, #f6f9ff 45%, #ffffff 100%);
+  font-family: "Manrope", "Segoe UI", sans-serif;
+  padding-bottom: 80px;
+}
+
+.market-hero {
+  padding: 80px 0 40px;
+}
+
+.market-hero h1 {
+  font-size: clamp(2.2rem, 3vw, 3.2rem);
+  font-weight: 700;
+  color: #0b1f3b;
+  max-width: 720px;
+}
+
+.market-hero p {
+  max-width: 640px;
+  color: #4b5b73;
+  font-size: 1.05rem;
+  margin-top: 12px;
+}
+
+.market-kicker {
+  display: inline-flex;
+  align-items: center;
+  background: #0b1f3b;
+  color: #ffffff;
+  font-size: 0.75rem;
+  padding: 6px 12px;
+  border-radius: 999px;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.market-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.market-section {
+  margin-top: 30px;
+}
+
+.market-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.market-panel {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: 0 20px 50px rgba(17, 33, 68, 0.08);
+  border: 1px solid #e7edf6;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.panel-head h2 {
+  font-size: 1.25rem;
+  margin: 0;
+  color: #0b1f3b;
+}
+
+.panel-sub {
+  color: #7a8aa1;
+  font-size: 0.85rem;
+}
+
+.market-cards {
+  display: grid;
+  gap: 12px;
+}
+
+.market-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #f7f9fc;
+}
+
+.market-card h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #0b1f3b;
+}
+
+.market-card p {
+  margin: 2px 0 0;
+  color: #6a778d;
+  font-size: 0.85rem;
+}
+
+.market-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.market-up {
+  color: #1d8b5c;
+}
+
+.market-down {
+  color: #c0392b;
+}
+
+.watchlist-control select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #dbe3ef;
+  background: #ffffff;
+}
+
+.watchlist-items {
+  display: grid;
+  gap: 12px;
+}
+
+.watchlist-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f7f9fc;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.watchlist-item span {
+  display: block;
+  color: #6a778d;
+  font-size: 0.85rem;
+}
+
+.watchlist-item .btn-link {
+  color: #387ed1;
+  text-decoration: none;
+  padding: 0;
+}
+
+.portfolio-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  background: #f7f9fc;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.portfolio-summary p {
+  margin: 0;
+  color: #6a778d;
+  font-size: 0.85rem;
+}
+
+.portfolio-summary h3 {
+  margin: 6px 0 0;
+  font-size: 1.1rem;
+}
+
+.trade-form,
+.alert-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.trade-form input,
+.trade-form select,
+.alert-form input,
+.alert-form select {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #dbe3ef;
+  background: #ffffff;
+}
+
+.holdings {
+  display: grid;
+  gap: 12px;
+}
+
+.holding-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #f7f9fc;
+}
+
+.holding-row span {
+  display: block;
+  color: #6a778d;
+  font-size: 0.85rem;
+}
+
+.trade-log {
+  display: grid;
+  gap: 10px;
+}
+
+.trade-log h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #0b1f3b;
+}
+
+.trade-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: #f7f9fc;
+}
+
+.trade-row span {
+  display: block;
+  color: #6a778d;
+  font-size: 0.85rem;
+}
+
+.alert-list {
+  display: grid;
+  gap: 12px;
+}
+
+.alert-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: #f7f9fc;
+  border: 1px solid transparent;
+}
+
+.alert-hit {
+  border-color: #1d8b5c;
+  background: rgba(29, 139, 92, 0.08);
+}
+
+@media (max-width: 768px) {
+  .market-hero {
+    padding-top: 60px;
+  }
+
+  .market-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

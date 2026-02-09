@@ -150,6 +150,25 @@ body {
   transform: translateY(-1px);
 }
 
+.auth-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.auth-link {
+  background: none;
+  border: none;
+  color: #387ed1;
+  font-size: 0.85rem;
+  padding: 0;
+  cursor: pointer;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 960px) {
   .auth-shell {
     grid-template-columns: 1fr;
@@ -944,6 +963,58 @@ hr {
 
 .section hr {
   margin-top: 6%;
+}
+
+.quick-order {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.quick-order input,
+.quick-order select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #dbe3ef;
+  background: #ffffff;
+}
+
+.quick-order button {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: #387ed1;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.activity-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.activity-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #f7f9fc;
+  border: 1px solid #e7edf6;
+}
+
+.activity-item span {
+  display: block;
+  color: #6a778d;
+  font-size: 0.85rem;
+}
+
+.text-muted {
+  color: #9aa4b2;
+  font-size: 0.9rem;
 }
 
 .topbar-container {
