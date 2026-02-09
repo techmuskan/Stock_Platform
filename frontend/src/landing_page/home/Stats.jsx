@@ -2,9 +2,9 @@ import React from 'react'
 
 const Stats = () => {
   return (
-    <div className="container p-5">
-      <div className="row px-5 align-items-center">
-        <div className="col-6 px-5 ">
+    <div className="container px-4 px-lg-5 py-5">
+      <div className="row px-3 px-lg-5 align-items-center">
+        <div className="col-12 col-lg-6 px-3 px-lg-5">
           <h1 className='fs-3 py-5'>Trust with confidence</h1>
           <div className="pb-3">
             <h3 className='fs-4'>Customer-first always</h3>
@@ -23,7 +23,7 @@ const Stats = () => {
             <p>With initiatives like Nudge and Kill Switch, we don't just facilitate transactions, but actively help you do better with your money.</p>
           </div>
         </div>
-        <div className="col-6 ">
+        <div className="col-12 col-lg-6 mt-4 mt-lg-0">
           <img src="media/trust.png" alt="" style={{maxWidth:"100%", width:"auto"}} />
           <div className='text-center'>
             <button className='btn btn-link text-decoration-none'>Explore our products <i class="fa fa-long-arrow-right" aria-hidden="true"></i></button>

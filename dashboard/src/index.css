@@ -1221,3 +1221,139 @@ hr {
 .action:hover {
   background-color: rgb(212, 212, 212);
 }
+
+@media (max-width: 1024px) {
+  .dashboard-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .watchlist-container {
+    flex-basis: auto;
+    width: 100%;
+    height: auto;
+    max-height: 55vh;
+  }
+
+  .content {
+    flex-basis: auto;
+    width: 100%;
+    height: auto;
+    padding: 20px;
+  }
+
+  .topbar-container {
+    height: auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .indices-container {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid rgb(224, 224, 224);
+  }
+
+  .menu-container {
+    width: 100%;
+    flex-basis: auto;
+    padding: 8px 16px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .menus {
+    flex-wrap: wrap;
+  }
+
+  .menus ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    padding: 0;
+    margin: 0;
+  }
+
+  .menus li {
+    display: block;
+    margin-right: 0;
+  }
+
+  hr {
+    display: none;
+  }
+
+  .profile {
+    margin-left: 0;
+  }
+
+  .profile-actions {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .watchlist-number {
+    position: static;
+    width: 100%;
+    border-left: 0;
+  }
+
+  .row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .col {
+    flex-basis: auto;
+    width: 100%;
+  }
+
+  .data {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .data hr {
+    display: none;
+  }
+
+  .order-table {
+    overflow-x: auto;
+  }
+
+  .order-table table {
+    min-width: 560px;
+  }
+}
+
+@media (max-width: 640px) {
+  .watchlist-container {
+    max-height: none;
+  }
+
+  .search {
+    padding: 12px 14px;
+  }
+
+  .watchlist-number ul li {
+    padding: 8px 12px;
+  }
+
+  .funds-panel,
+  .funds-form {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .funds-form input {
+    width: 100%;
+  }
+
+  .apps-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

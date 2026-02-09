@@ -8,19 +8,19 @@ const RightSection = ({
   learnMore,
 }) => {
   return (
-    <div className="container p-5">
-      <div className="row px-5 ">
-        <div className="col-5 px-5 d-flex flex-column justify-content-center">
+    <div className="container px-4 px-lg-5 py-5">
+      <div className="row px-3 px-lg-5">
+        <div className="col-12 col-lg-5 px-3 px-lg-5 d-flex flex-column justify-content-center mb-4 mb-lg-0">
           <h1 className="fs-3 py-2">{productName}</h1>
           <p className="lh-lg tracking-tight">{productDescription}</p>
-          <div className="d-flex gap-5 pb-4">
+          <div className="d-flex gap-3 gap-lg-5 pb-4 flex-wrap">
             <a className="text-decoration-none" href={tryDemo}>
               {tryDemo}{" "}
             </a>
           </div>
         </div>
-        <div className="col-7 px-5 text-center">
-          <img style={{ maxWidth: "auto" }} src={imageURL} alt="" />
+        <div className="col-12 col-lg-7 px-3 px-lg-5 text-center">
+          <img src={imageURL} alt="" className="product-hero" />
         </div>
       </div>
     </div>

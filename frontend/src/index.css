@@ -304,3 +304,81 @@ html,body{
     border-bottom: 1px solid #eef2f8;
   }
 }
+
+.hero-cta {
+  width: min(320px, 90%);
+  margin: 0 auto;
+}
+
+.pricing-badges {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  align-items: end;
+}
+
+.pricing-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.pricing-badge-img {
+  width: 70%;
+  max-width: 90px;
+  height: auto;
+}
+
+.product-hero {
+  max-width: 100%;
+  height: auto;
+}
+
+.team-photo {
+  border-radius: 50%;
+  width: min(260px, 70%);
+  height: auto;
+}
+
+.universe-logo {
+  max-width: 100%;
+  height: auto;
+}
+
+.universe-logo-xs {
+  width: 30%;
+}
+
+.universe-logo-sm {
+  width: 40%;
+}
+
+.universe-logo-md {
+  width: 50%;
+}
+
+.universe-cta {
+  width: min(260px, 90%);
+  margin: 0 auto;
+  background-color: #387ed1;
+  color: #ffffff;
+}
+
+.pricing-hero-icon {
+  width: min(220px, 70%);
+  height: auto;
+}
+
+@media (max-width: 992px) {
+  .pricing-badges {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .pricing-badges {
+    grid-template-columns: 1fr;
+  }
+}

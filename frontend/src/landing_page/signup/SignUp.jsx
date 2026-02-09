@@ -15,14 +15,23 @@ const SignUp = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const apiBaseUrl =
+    import.meta.env.VITE_API_BASE_URL || window.location.origin;
+  const dashboardUrl =
+    import.meta.env.VITE_DASHBOARD_URL || `${window.location.origin}/dashboard`;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3002/api/auth/signup", formData, {
-        withCredentials: true, // optional for signup
-      });
+      const res = await axios.post(
+        `${apiBaseUrl}/api/auth/signup`,
+        formData,
+        {
+          withCredentials: true, // optional for signup
+        }
+      );
       alert("Signup successful! Please login in the dashboard.");
-      window.location.href = "http://localhost:3000/login"; // redirect to dashboard login
+      window.location.href = `${dashboardUrl}/login`; // redirect to dashboard login
     } catch (err) {
       alert(err.response?.data?.message || "Signup failed");
     }
@@ -45,7 +54,7 @@ const SignUp = () => {
           </ul>
           <div className="signup-meta">
             Already have an account?
-            <a href="http://localhost:3000/login">Login</a>
+            <a href={`${dashboardUrl}/login`}>Login</a>
           </div>
         </div>
 

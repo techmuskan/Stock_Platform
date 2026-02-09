@@ -2,7 +2,7 @@ import React from 'react'
 
 const RaiseTicketRight = () => {
   return (
-    <div className="py-5" style={{marginRight:"20px"}}>
+    <div className="py-5">
       <div
         className="row py-2 px-4 text-primary lh-lg announcement-box"
         style={{ backgroundColor: "#ffe3e7", borderLeft: "10px solid orange" }}

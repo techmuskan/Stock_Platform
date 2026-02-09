@@ -21,12 +21,16 @@ module.exports.Signup = async (req, res) => {
     // create JWT token
     const token = createSecretToken(user._id);
 
-    // send token in cookie
-    res.cookie("token", token, {
+    const isProd = process.env.NODE_ENV === "production";
+    const cookieOptions = {
       httpOnly: true,
-      sameSite: "lax",  // important for cross-origin
-      maxAge: 3*24*60*60*1000 // 3 days
-    });
+      sameSite: isProd ? "none" : "lax",
+      secure: isProd,
+      maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
+    };
+
+    // send token in cookie
+    res.cookie("token", token, cookieOptions);
 
     res.status(201).json({
       success: true,
@@ -61,11 +65,14 @@ module.exports.Login = async (req, res) => {
 
     // ✅ IMPORTANT: set JWT cookie here too
     const token = createSecretToken(user._id);
-    res.cookie("token", token, {
+    const isProd = process.env.NODE_ENV === "production";
+    const cookieOptions = {
       httpOnly: true,
-      sameSite: "lax",
-      maxAge: 3*24*60*60*1000
-    });
+      sameSite: isProd ? "none" : "lax",
+      secure: isProd,
+      maxAge: 3 * 24 * 60 * 60 * 1000,
+    };
+    res.cookie("token", token, cookieOptions);
 
     res.status(200).json({ success: true, message: "Login successful" });
 
@@ -77,9 +84,11 @@ module.exports.Login = async (req, res) => {
 
 module.exports.Logout = async (_req, res) => {
   try {
+    const isProd = process.env.NODE_ENV === "production";
     res.clearCookie("token", {
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: isProd ? "none" : "lax",
+      secure: isProd,
     });
     return res.status(200).json({ success: true, message: "Logged out" });
   } catch (error) {

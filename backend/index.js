@@ -3,6 +3,8 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
+const fs = require("fs");
 
 const { HoldingsModel } = require("./models/Holdingsmodel");
 const { OrdersModel } = require("./models/OrdersModel");
@@ -14,10 +16,26 @@ const cookieParser = require("cookie-parser");
 const app = express();
 const PORT = process.env.PORT || 3002;
 
+// Trust proxy in production (needed for secure cookies behind proxies)
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+}
+
+const corsOrigins = (() => {
+  if (process.env.CORS_ORIGIN) {
+    return process.env.CORS_ORIGIN.split(",").map((s) => s.trim()).filter(Boolean);
+  }
+  const list = [];
+  if (process.env.FRONTEND_URL) list.push(process.env.FRONTEND_URL);
+  if (process.env.DASHBOARD_URL) list.push(process.env.DASHBOARD_URL);
+  if (list.length > 0) return list;
+  return ["http://localhost:5173", "http://localhost:3000"];
+})();
+
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:3000"], // allow frontend + dashboard
-    credentials: true, // allow cookies
+    origin: corsOrigins,
+    credentials: true,
   })
 );
 app.use(cookieParser());
@@ -125,6 +143,27 @@ app.post("/newOrder", requireAuth, async (req, res) => {
 });
 
 
+
+// ------------------ STATIC HOSTING (PROD) ------------------
+
+if (process.env.NODE_ENV === "production") {
+  const frontendDist = path.join(__dirname, "..", "frontend", "dist");
+  const dashboardBuild = path.join(__dirname, "..", "dashboard", "build");
+
+  if (fs.existsSync(dashboardBuild)) {
+    app.use("/dashboard", express.static(dashboardBuild));
+    app.get("/dashboard/*", (_req, res) => {
+      res.sendFile(path.join(dashboardBuild, "index.html"));
+    });
+  }
+
+  if (fs.existsSync(frontendDist)) {
+    app.use(express.static(frontendDist));
+    app.get("*", (_req, res) => {
+      res.sendFile(path.join(frontendDist, "index.html"));
+    });
+  }
+}
 
 // ------------------ START SERVER ------------------
 

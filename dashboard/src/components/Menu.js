@@ -23,7 +23,7 @@ const Menu = () => {
     } catch (err) {
       console.error("Logout failed:", err);
     } finally {
-      window.location.href = "http://localhost:5173/";
+      window.location.href = "/";
     }
   };
 
