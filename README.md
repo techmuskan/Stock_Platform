@@ -8,6 +8,7 @@ A full‑stack stock trading experience with a public landing site, a protected 
 - Live dashboard: holdings, positions, orders, portfolio P/L
 - Quick order placement from the dashboard
 - Public landing pages plus Market Lab (simulated live market, watchlist, alerts)
+- Deploy health check endpoint at `GET /api/health`
 
 ## Tech Stack
 - Frontend: React + Vite, React Router, Bootstrap, React Toastify
@@ -49,6 +50,8 @@ SMTP_PASS=your_app_password
 SMTP_FROM=Stock Platform <your_email@gmail.com>
 ```
 
+You can copy `backend/.env.example` as a starting point, but replace all placeholder secrets before deployment.
+
 Run:
 ```
 npm run dev
@@ -82,6 +85,7 @@ REACT_APP_API_BASE_URL=http://localhost:3002
 ## Notes
 - The dashboard is served at `/dashboard` in production (via backend static hosting).
 - Forgot password OTPs are emailed through SMTP (Gmail app password recommended).
+- The backend now exposes a health endpoint for uptime checks and deployment monitoring.
 
 ## Author
 Muskan Kawadkar(3rd Year, B.Tech student(Web Developer and Software Engineer))

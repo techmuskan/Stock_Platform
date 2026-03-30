@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
+const siteContent = require("./content/siteContent");
 
 const { HoldingsModel } = require("./models/Holdingsmodel");
 const { OrdersModel } = require("./models/OrdersModel");
@@ -15,9 +16,10 @@ const cookieParser = require("cookie-parser");
 
 const app = express();
 const PORT = process.env.PORT || 3002;
+const isProduction = process.env.NODE_ENV === "production";
 
 // Trust proxy in production (needed for secure cookies behind proxies)
-if (process.env.NODE_ENV === "production") {
+if (isProduction) {
   app.set("trust proxy", 1);
 }
 
@@ -34,7 +36,12 @@ const corsOrigins = (() => {
 
 app.use(
   cors({
-    origin: corsOrigins,
+    origin(origin, callback) {
+      if (!origin || corsOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("CORS origin not allowed"));
+    },
     credentials: true,
   })
 );
@@ -42,6 +49,21 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoute);
+app.get("/api/content/site", (_req, res) => {
+  res.json(siteContent);
+});
+
+app.get("/api/health", async (_req, res) => {
+  const dbState = mongoose.connection.readyState;
+  const dbHealthy = dbState === 1;
+
+  res.status(dbHealthy ? 200 : 503).json({
+    status: dbHealthy ? "ok" : "degraded",
+    service: "stock-platform-api",
+    timestamp: new Date().toISOString(),
+    database: dbHealthy ? "connected" : "disconnected",
+  });
+});
 
 
 // ------------------ GET ROUTES ------------------
@@ -146,7 +168,7 @@ app.post("/newOrder", requireAuth, async (req, res) => {
 
 // ------------------ STATIC HOSTING (PROD) ------------------
 
-if (process.env.NODE_ENV === "production") {
+if (isProduction) {
   const frontendDist = path.join(__dirname, "..", "frontend", "dist");
   const dashboardBuild = path.join(__dirname, "..", "dashboard", "build");
 
@@ -165,14 +187,26 @@ if (process.env.NODE_ENV === "production") {
   }
 }
 
+app.use((err, _req, res, _next) => {
+  console.error("Unhandled API error:", err);
+  res.status(500).json({ message: "Internal server error" });
+});
+
 // ------------------ START SERVER ------------------
 
-mongoose
-  .connect(process.env.MONGO_URL)
-  .then(() => {
-    console.log("MongoDB connected");
-    app.listen(PORT, () =>
-      console.log(`Server running on port ${PORT}`)
-    );
-  })
-  .catch((err) => console.error(err));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+if (!process.env.MONGO_URL) {
+  console.error("MONGO_URL is missing. API started in degraded mode until the database is configured.");
+} else {
+  mongoose
+    .connect(process.env.MONGO_URL, {
+      serverSelectionTimeoutMS: 10000,
+    })
+    .then(() => {
+      console.log("MongoDB connected");
+    })
+    .catch((err) => console.error("MongoDB connection failed:", err.message));
+}

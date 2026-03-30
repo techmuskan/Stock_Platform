@@ -12,17 +12,24 @@ const ForgotPassword = () => {
     confirmPassword: "",
   });
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState({ type: "", message: "" });
 
   const handleRequest = async (e) => {
-    e.preventDefault();
+    if (e?.preventDefault) e.preventDefault();
+    setStatus({ type: "", message: "" });
     try {
       setLoading(true);
       await api.post("/api/auth/forgot-password", { email });
-      alert("If the account exists, an OTP has been sent.");
+      setStatus({
+        type: "success",
+        message: "If the account exists, an OTP has been sent. It expires in 10 minutes.",
+      });
       setStep("reset");
     } catch (err) {
-      console.error(err);
-      alert("Could not send OTP. Try again.");
+      setStatus({
+        type: "error",
+        message: err.response?.data?.message || "Could not send OTP. Try again.",
+      });
     } finally {
       setLoading(false);
     }
@@ -30,6 +37,7 @@ const ForgotPassword = () => {
 
   const handleReset = async (e) => {
     e.preventDefault();
+    setStatus({ type: "", message: "" });
     try {
       setLoading(true);
       await api.post("/api/auth/reset-password", {
@@ -38,11 +46,16 @@ const ForgotPassword = () => {
         password: form.password,
         confirmPassword: form.confirmPassword,
       });
-      alert("Password updated. Please login.");
+      setStatus({
+        type: "success",
+        message: "Password updated successfully. Please log in with your new password.",
+      });
       navigate("/login");
     } catch (err) {
-      console.error(err);
-      alert(err.response?.data?.message || "Failed to reset password.");
+      setStatus({
+        type: "error",
+        message: err.response?.data?.message || "Failed to reset password.",
+      });
     } finally {
       setLoading(false);
     }
@@ -70,6 +83,11 @@ const ForgotPassword = () => {
           <form className="auth-form" onSubmit={handleRequest}>
             <h2>Request OTP</h2>
             <p>Enter your account email to receive the OTP.</p>
+            {status.message && (
+              <div className={`auth-message auth-message-${status.type}`}>
+                {status.message}
+              </div>
+            )}
             <label className="auth-label" htmlFor="forgot-email">
               Email
             </label>
@@ -98,6 +116,11 @@ const ForgotPassword = () => {
           <form className="auth-form" onSubmit={handleReset}>
             <h2>Verify & reset</h2>
             <p>Enter the OTP and choose a new password.</p>
+            {status.message && (
+              <div className={`auth-message auth-message-${status.type}`}>
+                {status.message}
+              </div>
+            )}
             <label className="auth-label" htmlFor="reset-otp">
               OTP
             </label>
@@ -122,6 +145,9 @@ const ForgotPassword = () => {
               placeholder="Create a strong password"
               required
             />
+            <div className="auth-helper">
+              Use at least 8 characters with uppercase, lowercase, number, and special character.
+            </div>
             <label className="auth-label" htmlFor="reset-confirm">
               Confirm password
             </label>

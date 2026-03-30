@@ -4,13 +4,45 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const { PasswordResetModel } = require("../models/PasswordResetModel");
 const { sendPasswordResetOtp } = require("../util/mailer");
+const {
+  getLoginThrottleStatus,
+  registerLoginFailure,
+  clearLoginFailures,
+  getRecoveryThrottleStatus,
+  registerRecoveryFailure,
+  clearRecoveryFailures,
+} = require("../util/authGuards");
+
+const EMAIL_REGEX = /^\S+@\S+\.\S+$/;
+const STRONG_PASSWORD_REGEX =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
+
+const getClientIp = (req) =>
+  req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.ip || req.socket?.remoteAddress;
+
+const buildPasswordMessage = () =>
+  "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.";
 
 module.exports.Signup = async (req, res) => {
   try {
-    const { email, password, username } = req.body;
+    const email = req.body.email?.trim().toLowerCase();
+    const password = req.body.password?.trim();
+    const username = req.body.username?.trim();
 
     if (!email || !password || !username) {
       return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (!EMAIL_REGEX.test(email)) {
+      return res.status(400).json({ message: "Enter a valid email address" });
+    }
+
+    if (username.length < 2) {
+      return res.status(400).json({ message: "Username must be at least 2 characters" });
+    }
+
+    if (!STRONG_PASSWORD_REGEX.test(password)) {
+      return res.status(400).json({ message: buildPasswordMessage() });
     }
 
     const existingUser = await User.findOne({ email });
@@ -29,6 +61,7 @@ module.exports.Signup = async (req, res) => {
       httpOnly: true,
       sameSite: isProd ? "none" : "lax",
       secure: isProd,
+      path: "/",
       maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
     };
 
@@ -38,10 +71,14 @@ module.exports.Signup = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "User signed up successfully",
+      nextStep: "Use your email and password to log in from the dashboard.",
     });
 
   } catch (error) {
     console.error("Signup error:", error);
+    if (error.code === 11000) {
+      return res.status(409).json({ message: "An account with this email already exists" });
+    }
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -49,35 +86,68 @@ module.exports.Signup = async (req, res) => {
 
 module.exports.Login = async (req, res) => {
   try {
-    const email = req.body.email?.trim();
+    const email = req.body.email?.trim().toLowerCase();
     const password = req.body.password?.trim();
+    const ip = getClientIp(req);
 
     if (!email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const user = await User.findOne({ email });
+    if (!EMAIL_REGEX.test(email)) {
+      return res.status(400).json({ message: "Enter a valid email address" });
+    }
+
+    const throttleStatus = getLoginThrottleStatus(email, ip);
+    if (throttleStatus.blocked) {
+      return res.status(429).json({
+        message: `Too many login attempts. Try again in about ${throttleStatus.retryAfterSeconds} seconds.`,
+      });
+    }
+
+    const user = await User.findOne({ email }).select("+password");
     if (!user) {
-      return res.status(401).json({ message: "Incorrect email or password" });
+      const failure = registerLoginFailure(email, ip);
+      return res.status(401).json({
+        message:
+          failure.attemptsRemaining > 0
+            ? `Incorrect email or password. ${failure.attemptsRemaining} attempt(s) remaining before temporary lockout.`
+            : `Too many login attempts. Try again in about ${failure.retryAfterSeconds} seconds.`,
+      });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Incorrect email or password" });
+      const failure = registerLoginFailure(email, ip);
+      return res.status(401).json({
+        message:
+          failure.attemptsRemaining > 0
+            ? `Incorrect email or password. ${failure.attemptsRemaining} attempt(s) remaining before temporary lockout.`
+            : `Too many login attempts. Try again in about ${failure.retryAfterSeconds} seconds.`,
+      });
     }
 
-    // ✅ IMPORTANT: set JWT cookie here too
+    clearLoginFailures(email, ip);
+
     const token = createSecretToken(user._id);
     const isProd = process.env.NODE_ENV === "production";
     const cookieOptions = {
       httpOnly: true,
       sameSite: isProd ? "none" : "lax",
       secure: isProd,
+      path: "/",
       maxAge: 3 * 24 * 60 * 60 * 1000,
     };
     res.cookie("token", token, cookieOptions);
 
-    res.status(200).json({ success: true, message: "Login successful" });
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      user: {
+        username: user.username,
+        email: user.email,
+      },
+    });
 
   } catch (err) {
     console.error(err);
@@ -92,6 +162,7 @@ module.exports.Logout = async (_req, res) => {
       httpOnly: true,
       sameSite: isProd ? "none" : "lax",
       secure: isProd,
+      path: "/",
     });
     return res.status(200).json({ success: true, message: "Logged out" });
   } catch (error) {
@@ -102,9 +173,21 @@ module.exports.Logout = async (_req, res) => {
 
 module.exports.ForgotPassword = async (req, res) => {
   try {
-    const email = req.body.email?.trim();
+    const email = req.body.email?.trim().toLowerCase();
+    const ip = getClientIp(req);
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
+    }
+
+    if (!EMAIL_REGEX.test(email)) {
+      return res.status(400).json({ message: "Enter a valid email address" });
+    }
+
+    const throttleStatus = getRecoveryThrottleStatus(email, ip);
+    if (throttleStatus.blocked) {
+      return res.status(429).json({
+        message: `Too many reset requests. Try again in about ${throttleStatus.retryAfterSeconds} seconds.`,
+      });
     }
 
     const user = await User.findOne({ email });
@@ -127,20 +210,24 @@ module.exports.ForgotPassword = async (req, res) => {
 
     await PasswordResetModel.create({ email, otpHash, expiresAt });
     await sendPasswordResetOtp({ to: email, otp });
+    clearRecoveryFailures(email, ip);
 
     return res.status(200).json({
       success: true,
       message: "If the account exists, an OTP has been sent.",
+      expiresInMinutes: 10,
     });
   } catch (error) {
     console.error("Forgot password error:", error);
+    const email = req.body.email?.trim().toLowerCase();
+    registerRecoveryFailure(email, getClientIp(req));
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 
 module.exports.ResetPassword = async (req, res) => {
   try {
-    const email = req.body.email?.trim();
+    const email = req.body.email?.trim().toLowerCase();
     const otp = req.body.otp?.trim();
     const password = req.body.password?.trim();
     const confirmPassword = req.body.confirmPassword?.trim();
@@ -151,6 +238,10 @@ module.exports.ResetPassword = async (req, res) => {
 
     if (password !== confirmPassword) {
       return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    if (!STRONG_PASSWORD_REGEX.test(password)) {
+      return res.status(400).json({ message: buildPasswordMessage() });
     }
 
     const reset = await PasswordResetModel.findOne({
@@ -178,6 +269,7 @@ module.exports.ResetPassword = async (req, res) => {
 
     reset.used = true;
     await reset.save();
+    clearRecoveryFailures(email, getClientIp(req));
 
     return res.status(200).json({ success: true, message: "Password updated" });
   } catch (error) {

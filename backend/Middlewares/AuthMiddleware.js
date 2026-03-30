@@ -20,7 +20,10 @@ module.exports.userVerification = async (req, res) => {
 
       return res.json({
         status: true,
-        user: user.username,
+        user: {
+          username: user.username,
+          email: user.email,
+        },
       });
     });
   } catch (error) {

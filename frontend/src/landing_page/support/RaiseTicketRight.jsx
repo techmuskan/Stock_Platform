@@ -1,6 +1,6 @@
 import React from 'react'
 
-const RaiseTicketRight = () => {
+const RaiseTicketRight = ({ announcements, quickLinks }) => {
   return (
     <div className="py-5">
       <div
@@ -8,19 +8,22 @@ const RaiseTicketRight = () => {
         style={{ backgroundColor: "#ffe3e7", borderLeft: "10px solid orange" }}
       >
         <ul className="mb-0">
-          <li>Adjustment of F&O contracts of BPCL due to dividend</li>
-          <li>Orders rejected in MCX segment [Resolved]</li>
+          {announcements.length === 0 ? (
+            <li>No current announcements match your search.</li>
+          ) : (
+            announcements.map((announcement) => <li key={announcement}>{announcement}</li>)
+          )}
         </ul>
       </div>
 
       <div className="row border my-4">
         <p className="border px-4 py-3 fw-bold mb-0" style={{backgroundColor: "#F0F0F0"}}>Quick Links</p>
         <ol className="px-5 py-4 mb-0 text-primary lh-lg quick-links">
-          <li>Tracking account opening</li>
-          <li>Track segment activation</li>
-          <li>Intraday margins</li>
-          <li>Kite user manual</li>
-          <li>Learn how to create a ticket</li>
+          {quickLinks.length === 0 ? (
+            <li>No quick links match your search.</li>
+          ) : (
+            quickLinks.map((link) => <li key={link}>{link}</li>)
+          )}
         </ol>
       </div>
     </div>

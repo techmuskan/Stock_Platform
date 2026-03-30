@@ -4,8 +4,7 @@ const RightSection = ({
   imageURL,
   productName,
   productDescription,
-  tryDemo,
-  learnMore,
+  links = [],
 }) => {
   return (
     <div className="container px-4 px-lg-5 py-5">
@@ -14,9 +13,11 @@ const RightSection = ({
           <h1 className="fs-3 py-2">{productName}</h1>
           <p className="lh-lg tracking-tight">{productDescription}</p>
           <div className="d-flex gap-3 gap-lg-5 pb-4 flex-wrap">
-            <a className="text-decoration-none" href={tryDemo}>
-              {tryDemo}{" "}
-            </a>
+            {links.map((link) => (
+              <a className="text-decoration-none" href={link.href} key={link.label}>
+                {link.label}
+              </a>
+            ))}
           </div>
         </div>
         <div className="col-12 col-lg-7 px-3 px-lg-5 text-center">

@@ -4,10 +4,8 @@ const LeftSection = ({
   imageURL,
   productName,
   productDescription,
-  tryDemo,
-  learnMore,
-  googlePlay,
-  appStore,
+  links = [],
+  stores = [],
 }) => {
   return (
     <div className="container px-4 px-lg-5 py-5">
@@ -19,17 +17,26 @@ const LeftSection = ({
           <h1 className="fs-3 py-2">{productName}</h1>
           <p className="lh-lg tracking-tight">{productDescription}</p>
           <div className="d-flex gap-3 gap-lg-5 pb-4 flex-wrap">
-            <a className="text-decoration-none" href={tryDemo}>{tryDemo} </a>
-            <a className="text-decoration-none" href={learnMore}>{learnMore} </a>
+            {links.map((link) => (
+              <a className="text-decoration-none" href={link.href} key={link.label}>
+                {link.label}
+              </a>
+            ))}
           </div>
-          <div className="d-flex gap-4 flex-wrap">
-            <a href={googlePlay}>
-              <img src="media/googlePlayBadge.svg" alt="" />
-            </a>
-            <a href={appStore}>
-              <img src="media/appstoreBadge.svg" alt="" />
-            </a>
-          </div>
+          {stores.length > 0 && (
+            <div className="d-flex gap-4 flex-wrap">
+              {stores.includes("googlePlay") && (
+                <a href="/">
+                  <img src="media/googlePlayBadge.svg" alt="Google Play" />
+                </a>
+              )}
+              {stores.includes("appStore") && (
+                <a href="/">
+                  <img src="media/appstoreBadge.svg" alt="App Store" />
+                </a>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

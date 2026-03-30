@@ -4,7 +4,7 @@ const PasswordResetSchema = new Schema(
   {
     email: { type: String, required: true, index: true },
     otpHash: { type: String, required: true },
-    expiresAt: { type: Date, required: true, index: true },
+    expiresAt: { type: Date, required: true },
     used: { type: Boolean, default: false },
   },
   { timestamps: true }

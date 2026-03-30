@@ -4,24 +4,24 @@ import api from "../api/client";
 const AuthContext = createContext({
   loading: true,
   isAuth: false,
-  user: "",
+  user: null,
   refreshAuth: () => {},
 });
 
 export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState(null);
 
   const refreshAuth = useCallback(async () => {
     try {
       setLoading(true);
       const res = await api.get("/api/auth/verify");
       setIsAuth(Boolean(res.data?.status));
-      setUser(res.data?.user || "");
+      setUser(res.data?.user || null);
     } catch (err) {
       setIsAuth(false);
-      setUser("");
+      setUser(null);
     } finally {
       setLoading(false);
     }

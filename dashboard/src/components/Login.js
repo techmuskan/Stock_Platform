@@ -6,6 +6,8 @@ import { useAuth } from "./AuthContext";
 
 const Login = () => {
   const [data, setData] = useState({ email: "", password: "" });
+  const [status, setStatus] = useState({ type: "", message: "" });
+  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
   const { loading, isAuth, refreshAuth } = useAuth();
 
@@ -20,15 +22,21 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setStatus({ type: "", message: "" });
+    setSubmitting(true);
 
     try {
       await api.post("/api/auth/login", data);
       await refreshAuth();
-      alert("Login successful!");
+      setStatus({ type: "success", message: "Login successful. Redirecting to your dashboard..." });
       navigate("/"); // Redirect to dashboard
     } catch (err) {
-      console.log(err.response?.data);
-      alert(err.response?.data?.message || "Invalid credentials");
+      setStatus({
+        type: "error",
+        message: err.response?.data?.message || "Invalid credentials",
+      });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -53,6 +61,11 @@ const Login = () => {
         <form className="auth-form" onSubmit={handleLogin}>
           <h2>Login</h2>
           <p>Use the email you registered with.</p>
+          {status.message && (
+            <div className={`auth-message auth-message-${status.type}`}>
+              {status.message}
+            </div>
+          )}
           <label className="auth-label" htmlFor="login-email">
             Email
           </label>
@@ -77,6 +90,9 @@ const Login = () => {
             onChange={handleChange}
             required
           />
+          <div className="auth-helper">
+            Passwords are case-sensitive. Too many failed attempts will temporarily lock login for safety.
+          </div>
           <div className="auth-footer">
             <button
               type="button"
@@ -86,7 +102,9 @@ const Login = () => {
               Forgot password?
             </button>
           </div>
-          <button type="submit">Login</button>
+          <button type="submit" disabled={submitting}>
+            {submitting ? "Signing in..." : "Login"}
+          </button>
         </form>
       </div>
     </div>

@@ -1,19 +1,18 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import api from "../api/client";
 import { useAuth } from "./AuthContext";
 
 const Menu = () => {
   const [selectedMenu, setSelectedMenu] = useState(0);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-  const navigate = useNavigate();
   const { user } = useAuth();
 
   const handleMenuClick = (index) => {
     setSelectedMenu(index);
   };
 
-  const handleProfileClick = (index) => {
+  const handleProfileClick = () => {
     setIsProfileDropdownOpen(!isProfileDropdownOpen);
   };
 
@@ -27,8 +26,10 @@ const Menu = () => {
     }
   };
 
-  const initials = user
-    ? user
+  const displayName = user?.username || "User";
+
+  const initials = displayName
+    ? displayName
         .trim()
         .split(" ")
         .filter(Boolean)
@@ -120,7 +121,7 @@ const Menu = () => {
         <hr />
         <div className="profile" onClick={handleProfileClick}>
           <div className="avatar">{initials}</div>
-          <p className="username">{user || "User"}</p>
+          <p className="username">{displayName}</p>
         </div>
         {isProfileDropdownOpen && (
           <div className="profile-actions">

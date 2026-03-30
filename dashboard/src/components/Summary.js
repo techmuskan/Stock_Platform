@@ -88,7 +88,7 @@ const Summary = () => {
   return (
     <>
       <div className="username">
-        <h6>Hi, {user || "User"}!</h6>
+        <h6>Hi, {user?.username || "User"}!</h6>
         <hr className="divider" />
       </div>
 
@@ -107,6 +107,9 @@ const Summary = () => {
           <div className="second">
             <p>
               Investment <span>{totals.investment.toFixed(2)}</span>{" "}
+            </p>
+            <p>
+              Positions <span>{positions.length}</span>{" "}
             </p>
             <p>
               P&amp;L{" "}
