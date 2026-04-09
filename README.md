@@ -3,12 +3,12 @@
 A full‑stack stock trading experience with a public landing site, a protected user dashboard, and a Node/Express API. The project includes paper trading, portfolio tracking, order management, and an OTP‑based password reset flow.
 
 ## Features
-- Secure auth with JWT cookies
-- Forgot password via email OTP (single‑use, 10‑minute expiry)
-- Live dashboard: holdings, positions, orders, portfolio P/L
-- Quick order placement from the dashboard
-- Public landing pages plus Market Lab (simulated live market, watchlist, alerts)
-- Deploy health check endpoint at `GET /api/health`
+- Secure auth with JWT cookies.
+- Forgot password via email OTP (single‑use, 10‑minute expiry).
+- Live dashboard: holdings, positions, orders, portfolio P/L.
+- Quick order placement from the dashboard.
+- Public landing pages plus Market Lab (simulated live market, watchlist, alerts).
+- Deploy health check endpoint at `GET /api/health`.
 
 ## Tech Stack
 - Frontend: React + Vite, React Router, Bootstrap, React Toastify
